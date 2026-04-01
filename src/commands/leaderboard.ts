@@ -39,7 +39,7 @@ export default {
                 scores
                     .map(
                         (user, index) =>
-                            `**${++index}.** ${userMention(user.id)} - ${user.score} pogs`,
+                            `**${calculatePosition(page, index)}.** ${userMention(user.id)} - ${user.score} pogs`,
                     )
                     .join("\n"),
             );
@@ -50,3 +50,9 @@ export default {
         await interaction.reply({ embeds: [embed] });
     },
 } satisfies SlashCommand;
+
+function calculatePosition(page: number, index: number): number {
+    return (
+        (page - 1) * PogbotDB.getInstance().LEADERBOARD_PAGE_SIZE + index + 1
+    );
+}

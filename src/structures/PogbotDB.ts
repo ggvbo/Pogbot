@@ -1,9 +1,4 @@
-import {
-    Collection,
-    Role,
-    TextChannel,
-    type Snowflake,
-} from "discord.js";
+import { Collection, Role, TextChannel, type Snowflake } from "discord.js";
 import { desc, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 
@@ -12,7 +7,7 @@ import { scores, settings, type Score, type Settings } from "../db/schema.js";
 export class PogbotDB {
     private static instance: PogbotDB;
 
-    private readonly LEADERBOARD_PAGE_SIZE = 10;
+    public readonly LEADERBOARD_PAGE_SIZE = 10;
 
     // In-memory cache.
     private readonly triggers = new Collection<Snowflake, Snowflake[]>();
