@@ -15,7 +15,8 @@
     "type": "module",
     "main": "src/index.js",
     "scripts": {
-        "test": "tsx --env-file=.env src/index.ts"
+        "test": "NODE_ENV=development tsx --env-file=.env src/index.ts",
+        "start": "NODE_ENV=production node --env-file=.env ./dist/src/index.js"
     },
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^6.0.2",

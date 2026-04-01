@@ -1,4 +1,6 @@
 import { readdir } from "fs/promises";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 import {
     Client,
@@ -20,6 +22,12 @@ import humanizeDuration from "humanize-duration";
 
 import type { SlashCommand } from "../interfaces/Command.js";
 import { PogbotDB } from "./PogbotDB.js";
+
+const EXPECTED_FILE_EXTENSION =
+    process.env.NODE_ENV === "development" ? ".ts" : ".js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export class Pogbot extends Client {
     public readonly commands = new Collection<string, SlashCommand>();
@@ -51,15 +59,17 @@ export class Pogbot extends Client {
     private async loadCommands(): Promise<void> {
         const rest = new REST().setToken(this.token as string);
 
-        const files = (await readdir("./src/commands")).filter(
-            (file) => file.endsWith(".js") || file.endsWith(".ts"),
+        const filePath = join(__dirname, "..", "commands");
+
+        const files = (await readdir(filePath)).filter((file) =>
+            file.endsWith(EXPECTED_FILE_EXTENSION),
         );
 
         const slashCommands: ApplicationCommandDataResolvable[] = [];
 
         for (const file of files) {
             const { default: command } = (await import(
-                `../commands/${file}`
+                join(filePath, file)
             )) as { default: SlashCommand };
 
             this.commands.set(command.data.name, command);
