@@ -1,0 +1,35 @@
+{
+    "name": "pogbot",
+    "version": "1.0.0",
+    "description": "",
+    "homepage": "https://github.com/ggvbo/Pogbot#readme",
+    "bugs": {
+        "url": "https://github.com/ggvbo/Pogbot/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ggvbo/Pogbot.git"
+    },
+    "license": "MIT",
+    "author": "ggvbo",
+    "type": "module",
+    "main": "src/index.js",
+    "scripts": {
+        "test": "tsx --env-file=.env src/index.ts"
+    },
+    "devDependencies": {
+        "@types/humanize-duration": "^3.27.4",
+        "@types/pg": "^8.20.0",
+        "drizzle-kit": "^0.31.10",
+        "prettier": "3.8.1",
+        "tsx": "^4.21.0",
+        "typescript": "^6.0.2"
+    },
+    "dependencies": {
+        "discord.js": "^14.25.1",
+        "dotenv": "^17.3.1",
+        "drizzle-orm": "^0.45.1",
+        "humanize-duration": "^3.33.2",
+        "pg": "^8.20.0"
+    }
+}
