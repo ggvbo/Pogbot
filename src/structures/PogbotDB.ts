@@ -1,13 +1,13 @@
 import {
     Collection,
-    GuildChannel,
     Role,
     TextChannel,
     type Snowflake,
 } from "discord.js";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { scores, settings, type Settings } from "../db/schema.js";
 import { desc, eq, sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
+
+import { scores, settings, type Score, type Settings } from "../db/schema.js";
 
 export class PogbotDB {
     private static instance: PogbotDB;
@@ -73,21 +73,36 @@ export class PogbotDB {
         return result[0]?.score ?? 0;
     }
 
-    public async addScore(id: Snowflake, amount: number): Promise<number> {
-        const result = await this.database
+    public async updateScore(
+        id: Snowflake,
+        amount: number,
+        increment: boolean = true,
+    ): Promise<number> {
+        const operation = increment ? sql`${scores.score} + ${amount}` : amount;
+
+        if (!increment && amount == 0) {
+            await this.database.delete(scores).where(eq(scores.id, id));
+            return 0;
+        }
+
+        const [result] = await this.database
             .insert(scores)
             .values({ id, score: amount })
             .onConflictDoUpdate({
                 target: scores.id,
-                set: { score: sql`${scores.score} + ${amount}` },
+                set: { score: operation },
             })
             .returning({ score: scores.score });
 
-        return result[0]!.score;
+        if (result!.score <= 0) {
+            await this.database.delete(scores).where(eq(scores.id, id));
+            return 0;
+        }
+
+        return result!.score;
     }
 
-    // TODO: Add return type.
-    public async getLeaderboard(page: number) {
+    public async getLeaderboard(page: number): Promise<Score[]> {
         return await this.database
             .select({ id: scores.id, score: scores.score })
             .from(scores)

@@ -9,6 +9,7 @@ import {
     SlashCommandBuilder,
     type Snowflake,
 } from "discord.js";
+
 import type { SlashCommand } from "../interfaces/Command.js";
 import { PogbotDB } from "../structures/PogbotDB.js";
 

@@ -18,4 +18,5 @@ export const settings = pgTable("settings", {
         .default(sql`ARRAY[]::text[]`),
 });
 
+export type Score = InferSelectModel<typeof scores>;
 export type Settings = InferSelectModel<typeof settings>;

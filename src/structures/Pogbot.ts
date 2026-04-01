@@ -1,3 +1,5 @@
+import { readdir } from "fs/promises";
+
 import {
     Client,
     Collection,
@@ -14,11 +16,10 @@ import {
     Message,
     userMention,
 } from "discord.js";
-import { readdir } from "fs/promises";
+import humanizeDuration from "humanize-duration";
 
 import type { SlashCommand } from "../interfaces/Command.js";
 import { PogbotDB } from "./PogbotDB.js";
-import humanizeDuration from "humanize-duration";
 
 export class Pogbot extends Client {
     public readonly commands = new Collection<string, SlashCommand>();
@@ -153,7 +154,7 @@ export class Pogbot extends Client {
                         `:tada: And it's ${userMention(winner!.author.id)} on top with a time of **${humanizeDuration(Date.now() - initialTime)}**. GG!`,
                     );
 
-                    await this.database.addScore(winner!.author.id, 1);
+                    await this.database.updateScore(winner!.author.id, 1);
                 } catch {
                     await message.channel.send(
                         ":pensive: Looks like no one pogged in time. Better luck next time!",
