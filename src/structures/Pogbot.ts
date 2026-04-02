@@ -136,14 +136,9 @@ export class Pogbot extends Client {
             message.guildId,
         );
         if (listenedChannels.includes(message.channelId)) {
-            console.log(
-                `Found message in listened channel ${message.channelId}`,
-            );
             const triggers = await this.database.getTriggers(message.guildId);
 
             if (triggers.some((id) => message.mentions.roles.has(id))) {
-                console.log(`Message in listened channel contains trigger.`);
-
                 const initialTime = Date.now();
 
                 await message.react("👀");
