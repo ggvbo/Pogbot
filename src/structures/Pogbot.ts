@@ -160,6 +160,8 @@ export class Pogbot extends Client {
 
                     const winner = collector.first();
 
+                    await winner!.react("🐐");
+
                     await winner!.reply(
                         `:tada: And it's ${userMention(winner!.author.id)} on top with a time of **${humanizeDuration(Date.now() - initialTime)}**. GG!`,
                     );
