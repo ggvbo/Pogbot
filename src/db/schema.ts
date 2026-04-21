@@ -4,6 +4,7 @@ import { pgTable, integer, text } from "drizzle-orm/pg-core";
 export const scores = pgTable("scores", {
     id: text().primaryKey(),
     score: integer().notNull().default(0),
+    bestTime: integer()
 });
 
 export const settings = pgTable("settings", {

@@ -97,9 +97,30 @@ export class PogbotDB {
         return result!.score;
     }
 
+    public async getBestTime(id: Snowflake): Promise<number | null> {
+        const result = await this.database.select({ bestTime: scores.bestTime }).from(scores).where(eq(scores.id, id));
+
+        if (!result[0])
+            console.log(`Missing bestTime information for ${0}. Returning null.`)
+
+        return result[0]?.bestTime ?? null;
+    }
+
+    public async updateBestTime(id: Snowflake, time: number): Promise<void> {
+        await this.database
+            .insert(scores)
+            .values({ id, bestTime: time })
+            .onConflictDoUpdate({
+                target: scores.id,
+                set: { bestTime: time },
+            })
+            .returning({ score: scores.score });    
+    }
+
+
     public async getLeaderboard(page: number): Promise<Score[]> {
         return await this.database
-            .select({ id: scores.id, score: scores.score })
+            .select({ id: scores.id, score: scores.score, bestTime: scores.bestTime })
             .from(scores)
             .orderBy(desc(scores.score))
             .offset((page - 1) * this.LEADERBOARD_PAGE_SIZE)
