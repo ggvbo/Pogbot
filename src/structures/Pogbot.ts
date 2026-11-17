@@ -139,7 +139,7 @@ export class Pogbot extends Client {
             const triggers = await this.database.getTriggers(message.guildId);
 
             if (triggers.some((id) => message.mentions.roles.has(id))) {
-                const initialTime = Date.now();
+                const initialTime = this.discordEpochMs(message.id);
 
                 await message.react("👀");
 
@@ -157,8 +157,9 @@ export class Pogbot extends Client {
 
                     await winner!.react("🐐");
 
+                    const reactionTime = this.discordEpochMs(winner!.id);
                     await winner!.reply(
-                        `:tada: And it's ${userMention(winner!.author.id)} on top with a time of **${humanizeDuration(Date.now() - initialTime)}**. GG!`,
+                        `:tada: And it's ${userMention(winner!.author.id)} on top with a time of **${humanizeDuration(Number(reactionTime - initialTime))}**. GG!`,
                     );
 
                     await this.database.updateScore(winner!.author.id, 1);
@@ -180,4 +181,15 @@ export class Pogbot extends Client {
         await this.database.checkDeletedRole(role);
     }
     // #endregion
+
+    /**
+     * Converts a snowflake into the amount of milliseconds since the Discord epoch.
+     *
+     * @param snowflake a snowflake, i.e. a message id
+     * @returns the amount of milliseconds since the Discord epoch
+     * @private
+     */
+    private discordEpochMs(snowflake: string): bigint {
+        return BigInt(snowflake) >> 22n;
+    }
 }
